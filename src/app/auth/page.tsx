@@ -1,6 +1,7 @@
 import { AuthForm } from "@/features/auth/components/auth-form";
 import DotField from "@/components/kokonutui/dot-field";
 import { GalleryVerticalEnd, Sparkles } from "lucide-react";
+import Image from "next/image";
 
 export default function LoginPage() {
   return (
@@ -9,21 +10,13 @@ export default function LoginPage() {
       <div className="flex flex-col p-6 md:p-10">
         {/* Brand */}
         <div className="flex items-center gap-2 font-semibold tracking-tight">
-          <div className="flex size-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-            <GalleryVerticalEnd className="size-5" />
-          </div>
-          <span className="text-lg">Tenvy</span>
+          <Image src={`/logo.png`} width={80} height={80} alt="logo" />
         </div>
 
         {/* Form */}
         <div className="flex flex-1 items-center justify-center py-10">
           <div className="w-full max-w-[380px]">
             <div className="mb-8 space-y-3">
-              <div className="inline-flex items-center gap-2 rounded-full border bg-muted/50 px-3 py-1 text-xs font-medium text-muted-foreground">
-                <Sparkles className="size-3.5" />
-                Welcome to Tenvy
-              </div>
-
               <h1 className="text-3xl font-semibold tracking-tight">
                 Welcome back
               </h1>
@@ -67,8 +60,8 @@ export default function LoginPage() {
           className="text-black/40"
           children={
             <div className="relative text-black z-10 flex h-full min-h-screen flex-col items-center justify-center px-12 text-center">
-              <div className="mb-6 flex size-14 items-center justify-center rounded-2xl border bg-background/80 shadow-sm backdrop-blur">
-                <Sparkles className="size-6" />
+              <div className="mb-6 flex size-18 px-2 items-center justify-center rounded-2xl border bg-background/80 shadow-sm backdrop-blur">
+                <Image src={`/logo.png`} width={80} height={80} alt="logo" />
               </div>
 
               <h2 className="max-w-lg text-4xl font-semibold tracking-tight">
