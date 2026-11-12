@@ -131,24 +131,24 @@ function createNoise(seed: number) {
         lerp(
           grad(perm[AB], fx, fy - 1, fz),
           grad(perm[BB], fx - 1, fy - 1, fz),
-          u
+          u,
         ),
-        v
+        v,
       ),
       lerp(
         lerp(
           grad(perm[AA + 1], fx, fy, fz - 1),
           grad(perm[BA + 1], fx - 1, fy, fz - 1),
-          u
+          u,
         ),
         lerp(
           grad(perm[AB + 1], fx, fy - 1, fz - 1),
           grad(perm[BB + 1], fx - 1, fy - 1, fz - 1),
-          u
+          u,
         ),
-        v
+        v,
       ),
-      w
+      w,
     );
   };
 }
@@ -186,7 +186,7 @@ function createField(width: number, height: number, spacing: number): Field {
     tone: new Float32Array(size),
     coarse: new Float32Array(
       (Math.ceil((cols - 1) / TONE_STEP) + 1) *
-        (Math.ceil((rows - 1) / TONE_STEP) + 1)
+        (Math.ceil((rows - 1) / TONE_STEP) + 1),
     ),
     ox: new Float32Array(size),
     oy: new Float32Array(size),
@@ -205,7 +205,7 @@ function createField(width: number, height: number, spacing: number): Field {
 function sampleTone(
   field: Field,
   noise: (x: number, y: number, z: number) => number,
-  time: number
+  time: number,
 ) {
   const { cols, rows, spacing, originX, originY, tone, coarse } = field;
   const z = time * NOISE_SPEED;
@@ -243,7 +243,7 @@ function neighbours(
   values: Float32Array,
   field: Field,
   i: number,
-  j: number
+  j: number,
 ): number {
   const { cols, rows } = field;
   const k = j * cols + i;
@@ -290,12 +290,12 @@ function applyShocks(field: Field, shocks: Shock[]) {
     const i0 = Math.max(0, Math.floor((shock.x - outer - originX) / spacing));
     const i1 = Math.min(
       cols - 1,
-      Math.ceil((shock.x + outer - originX) / spacing)
+      Math.ceil((shock.x + outer - originX) / spacing),
     );
     const j0 = Math.max(0, Math.floor((shock.y - outer - originY) / spacing));
     const j1 = Math.min(
       rows - 1,
-      Math.ceil((shock.y + outer - originY) / spacing)
+      Math.ceil((shock.y + outer - originY) / spacing),
     );
     for (let j = j0; j <= j1; j++) {
       const dy = originY + j * spacing - shock.y;
@@ -351,7 +351,7 @@ function applyPointer(field: Field, pointer: Pointer, dt: number) {
       // Distance from the dot to the swipe segment.
       const t = Math.min(
         1,
-        Math.max(0, ((px - startX) * segX + (py - startY) * segY) / lengthSq)
+        Math.max(0, ((px - startX) * segX + (py - startY) * segY) / lengthSq),
       );
       const awayX = px - startX - segX * t;
       const awayY = py - startY - segY * t;
@@ -415,7 +415,7 @@ function draw(
   ctx: CanvasRenderingContext2D,
   field: Field,
   size: { width: number; height: number; color: string },
-  moving: boolean
+  moving: boolean,
 ) {
   const { cols, rows, spacing, originX, originY, tone, ox, oy } = field;
   const maxRadius = spacing * 0.42;
@@ -429,7 +429,7 @@ function draw(
         amount *= 1 + COMPRESSION_GAIN * compression(field, i, j);
       }
       const bucket = Math.round(
-        Math.min(1, Math.max(0, amount)) * (BUCKETS - 1)
+        Math.min(1, Math.max(0, amount)) * (BUCKETS - 1),
       );
       if (bucket === 0) {
         continue;
@@ -474,7 +474,7 @@ export default function DotField({
     }
 
     const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
+      "(prefers-reduced-motion: reduce)",
     ).matches;
     const noise = createNoise(seed);
     const gap = Math.max(6, spacing);
@@ -595,7 +595,7 @@ export default function DotField({
     const watchDpr = () => {
       dprQuery?.removeEventListener("change", onDpr);
       dprQuery = window.matchMedia(
-        `(resolution: ${window.devicePixelRatio}dppx)`
+        `(resolution: ${window.devicePixelRatio}dppx)`,
       );
       dprQuery.addEventListener("change", onDpr);
     };
@@ -666,7 +666,7 @@ export default function DotField({
       if (
         event.button !== 0 ||
         (event.target as HTMLElement).closest(
-          "a, button, input, textarea, select, label, [role='button']"
+          "a, button, input, textarea, select, label, [role='button']",
         )
       ) {
         return;
@@ -705,8 +705,8 @@ export default function DotField({
   return (
     <div
       className={cn(
-        "relative flex min-h-[560px] w-full items-center justify-center overflow-hidden bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100",
-        className
+        "relative flex min-h-140 w-full items-center justify-center overflow-hidden bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100",
+        className,
       )}
       ref={rootRef}
     >

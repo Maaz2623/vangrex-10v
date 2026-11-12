@@ -420,7 +420,7 @@ export default function DrapeBackground({
     }
 
     const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
+      "(prefers-reduced-motion: reduce)",
     ).matches;
     const forces: Forces = {
       time: 0,
@@ -656,8 +656,8 @@ export default function DrapeBackground({
   return (
     <div
       className={cn(
-        "relative flex min-h-[560px] w-full touch-pan-y items-center justify-center overflow-hidden bg-zinc-100 text-zinc-900 data-[grabbing]:cursor-grabbing dark:bg-zinc-950 dark:text-zinc-100",
-        className
+        "relative flex min-h-140 w-full touch-pan-y items-center justify-center overflow-hidden bg-zinc-100 text-zinc-900 data-grabbing:cursor-grabbing dark:bg-zinc-950 dark:text-zinc-100",
+        className,
       )}
       ref={rootRef}
     >

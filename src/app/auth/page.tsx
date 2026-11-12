@@ -18,7 +18,7 @@ export default async function LoginPage() {
 
         {/* Form */}
         <div className="flex flex-1 items-center justify-center py-10">
-          <div className="w-full max-w-[380px]">
+          <div className="w-full max-w-95">
             <div className="mb-8 space-y-3">
               <h1 className="text-3xl font-semibold tracking-tight">
                 Welcome back
