@@ -2,8 +2,11 @@ import { AuthForm } from "@/features/auth/components/auth-form";
 import DotField from "@/components/kokonutui/dot-field";
 import { GalleryVerticalEnd, Sparkles } from "lucide-react";
 import Image from "next/image";
+import { requireUnAuth } from "@/lib/auth-utils";
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  await requireUnAuth();
+
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       {/* Left side */}

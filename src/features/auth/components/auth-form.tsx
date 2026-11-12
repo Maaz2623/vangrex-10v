@@ -16,35 +16,58 @@ import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import { ArrowRight, Eye, EyeOff, Mail } from "lucide-react";
 import { useState } from "react";
+import { authClient } from "@/lib/auth-client";
 
 export function AuthForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
-  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const authenticate = (provider: "google" | "github") => {
+    authClient.signIn.social(
+      {
+        provider: provider,
+      },
+      {
+        onRequest: () => {
+          setLoading(true);
+        },
+        onResponse(context) {
+          setLoading(false);
+        },
+      },
+    );
+  };
 
   return (
     <form className={cn("flex flex-col gap-6", className)} {...props}>
-      <FieldGroup>
-        {/* Social login */}
-        <div className="grid grid-cols-2 gap-3">
-          <Button variant="outline" type="button" className="h-11 gap-2">
-            <FcGoogle className="size-4" />
-            Google
-          </Button>
+      <fieldset disabled={loading}>
+        <FieldGroup>
+          {/* Social login */}
+          <div className="grid grid-cols-2 gap-3">
+            <Button
+              onClick={() => authenticate("google")}
+              variant="outline"
+              type="button"
+              className="h-11 gap-2"
+            >
+              <FcGoogle className="size-4" />
+              Google
+            </Button>
 
-          <Button variant="outline" type="button" className="h-11 gap-2">
-            <FaGithub className="size-4" />
-            GitHub
-          </Button>
-        </div>
-
-        {/* Submit */}
-        <Button type="submit" className="h-11 w-full gap-2">
-          Sign in
-          <ArrowRight className="size-4" />
-        </Button>
-      </FieldGroup>
+            <Button
+              onClick={() => authenticate("github")}
+              variant="outline"
+              type="button"
+              className="h-11 gap-2"
+            >
+              <FaGithub className="size-4" />
+              GitHub
+            </Button>
+          </div>
+        </FieldGroup>
+      </fieldset>
     </form>
   );
 }

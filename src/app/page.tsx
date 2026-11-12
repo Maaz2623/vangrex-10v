@@ -1,9 +1,16 @@
+import { ThemeSwitcher } from "@/components/theme-switcher";
+import Hero from "@/features/home/components/hero";
+import Navbar from "@/features/home/components/navbar";
+import { requireAuth } from "@/lib/auth-utils";
 import Image from "next/image";
 
-const HomePage = () => {
+const HomePage = async () => {
+  await requireAuth();
   return (
-    <div>
-    </div>
+    <main className="relative">
+      <Navbar />
+      <Hero />
+    </main>
   );
 };
 
