@@ -23,23 +23,34 @@ type NavItem = {
   }[];
 };
 
-export function NavMain({ items }: { items: NavItem[] }) {
+type NavMainProps = {
+  items: NavItem[];
+  label?: string;
+};
+
+export function NavMain({ items, label = "Platform" }: NavMainProps) {
   const router = useRouter();
   const pathname = usePathname();
+
+  // Find the most specific matching route
+  const activeItem = [...items]
+    .filter(
+      (item) =>
+        pathname === item.url ||
+        (item.url !== "/" && pathname.startsWith(`${item.url}/`)),
+    )
+    .sort((a, b) => b.url.length - a.url.length)[0];
 
   return (
     <SidebarGroup>
       <SidebarGroupLabel className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70">
-        Platform
+        {label}
       </SidebarGroupLabel>
 
       <SidebarMenu className="gap-1">
         <LayoutGroup id="sidebar-navigation">
           {items.map((item) => {
-            const isActive =
-              pathname === item.url ||
-              (item.url !== "/" && pathname.startsWith(`${item.url}/`));
-
+            const isActive = activeItem?.url === item.url;
             const Icon = item.icon;
 
             return (

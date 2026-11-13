@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { motion, MotionConfig } from "motion/react";
-
 import {
   AudioWaveform,
   BookOpen,
@@ -11,7 +10,16 @@ import {
   GalleryVerticalEnd,
   Settings2,
   SquareTerminal,
+  SlidersHorizontal,
+  BrainCircuit,
+  Wrench,
+  Database,
+  FlaskConical,
+  LayoutDashboard,
+  GaugeIcon,
 } from "lucide-react";
+
+import { usePathname } from "next/navigation";
 
 import {
   Sidebar,
@@ -45,7 +53,12 @@ const data = {
     },
   ],
 
-  navMain: [
+  platform: [
+    {
+      title: "Overview",
+      url: "/dashboard/overview",
+      icon: GaugeIcon,
+    },
     {
       title: "Agent Builder",
       url: "/dashboard/agent-builder",
@@ -65,6 +78,39 @@ const data = {
       title: "Settings",
       url: "/dashboard/settings",
       icon: Settings2,
+    },
+  ],
+
+  agentBuilder: [
+    {
+      title: "Overview",
+      url: "/dashboard/agent-builder",
+      icon: LayoutDashboard,
+    },
+    {
+      title: "Instructions",
+      url: "/dashboard/agent-builder/instructions",
+      icon: BookOpen,
+    },
+    {
+      title: "Models",
+      url: "/dashboard/agent-builder/models",
+      icon: BrainCircuit,
+    },
+    {
+      title: "Capabilities",
+      url: "/dashboard/agent-builder/capabilities",
+      icon: Wrench,
+    },
+    {
+      title: "Knowledge",
+      url: "/dashboard/agent-builder/knowledge",
+      icon: Database,
+    },
+    {
+      title: "Playground",
+      url: "/dashboard/agent-builder/playground",
+      icon: FlaskConical,
     },
   ],
 };
@@ -99,10 +145,17 @@ const itemVariants = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const pathname = usePathname();
+
+  const isAgentBuilder = pathname.startsWith("/dashboard/agent-builder");
+
+  const navigation = isAgentBuilder ? data.agentBuilder : data.platform;
+
   return (
     <MotionConfig reducedMotion="user">
       <Sidebar collapsible="icon" {...props}>
         <motion.div
+          key={isAgentBuilder ? "agent-builder" : "platform"}
           className="flex min-h-0 flex-1 flex-col"
           variants={sidebarVariants}
           initial="hidden"
@@ -118,7 +171,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           {/* Navigation */}
           <SidebarContent>
             <motion.div variants={itemVariants}>
-              <NavMain items={data.navMain} />
+              <NavMain
+                key={isAgentBuilder ? "agent-builder" : "platform"}
+                items={navigation}
+                label={isAgentBuilder ? "Agent Configuration" : "Platform"}
+              />
             </motion.div>
           </SidebarContent>
 
