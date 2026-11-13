@@ -104,7 +104,7 @@ const Navbar = () => {
         >
           <Button asChild size="sm">
             <Link
-              href={session ? "/dashboard" : "/auth"}
+              href={session ? "/dashboard/agent-builder" : "/auth"}
               className="group flex items-center gap-2 rounded-full bg-primary px-4 text-[13px] font-medium text-primary-foreground transition-all hover:opacity-90"
             >
               Get started
