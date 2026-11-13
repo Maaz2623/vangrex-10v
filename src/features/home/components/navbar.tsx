@@ -3,9 +3,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
-import { ArrowUpRight, Menu, X, ChevronDown } from "lucide-react";
+import { ArrowUpRight, Menu, X } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth-client";
 
 const navLinks = [
   { label: "Product", href: "#product" },
@@ -14,75 +15,173 @@ const navLinks = [
   { label: "Pricing", href: "#pricing" },
 ];
 
+const ease = [0.22, 1, 0.36, 1] as const;
+
+const reveal = {
+  hidden: {
+    opacity: 0,
+    y: -16,
+    filter: "blur(6px)",
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+  },
+};
+
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const session = authClient.useSession();
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6">
-      <nav className="mx-auto flex py-2 max-w-7xl items-center justify-between rounded-2xl px-5  sm:px-7">
+    <header className="fixed inset-x-0 top-0 select-none z-50 px-4 pt-4 sm:px-6">
+      <motion.nav
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: {},
+          visible: {
+            transition: {
+              staggerChildren: 0.12,
+              delayChildren: 3.2,
+            },
+          },
+        }}
+        className="mx-auto flex max-w-7xl items-center justify-between rounded-2xl px-5 py-2 sm:px-7"
+      >
         {/* Logo */}
-        <div className="flex items-center gap-2 font-semibold tracking-tight">
-          <Image src={`/logo-white.png`} width={80} height={80} alt="logo" />
-        </div>
+        <motion.div
+          variants={reveal}
+          transition={{ duration: 1.2, ease }}
+          className="flex items-center gap-2 font-semibold tracking-tight"
+        >
+          <Link href="/" aria-label="Home">
+            <Image
+              src="/logo-white.png"
+              width={80}
+              height={80}
+              alt="logo"
+              priority
+            />
+          </Link>
+        </motion.div>
 
         {/* Desktop navigation */}
-        <div className="hidden items-center gap-8 md:flex">
+        <motion.div
+          variants={{
+            hidden: {},
+            visible: {
+              transition: {
+                staggerChildren: 0.15,
+                delayChildren: 0.15,
+              },
+            },
+          }}
+          className="hidden items-center gap-8 md:flex"
+        >
           {navLinks.map((link) => (
-            <Link
+            <motion.div
               key={link.label}
-              href={link.href}
-              className="text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+              variants={reveal}
+              transition={{ duration: 0.9, ease }}
             >
-              {link.label}
-            </Link>
+              <Link
+                href={link.href}
+                className="text-[13px] font-medium text-muted-foreground transition-colors duration-200 hover:text-foreground"
+              >
+                {link.label}
+              </Link>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* Desktop actions */}
-        <div className="hidden items-center gap-5 md:flex">
-          <Button asChild size={`sm`}>
+        <motion.div
+          variants={reveal}
+          transition={{ duration: 1, ease }}
+          className="hidden items-center gap-5 md:flex"
+        >
+          <Button asChild size="sm">
             <Link
-              href="/auth"
+              href={session ? "/dashboard" : "/auth"}
               className="group flex items-center gap-2 rounded-full bg-primary px-4 text-[13px] font-medium text-primary-foreground transition-all hover:opacity-90"
             >
               Get started
               <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
             </Link>
           </Button>
-        </div>
+        </motion.div>
 
         {/* Mobile menu button */}
-        <Button
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="flex h-10 w-10 items-center justify-center rounded-full transition-colors hover:bg-muted md:hidden"
-          aria-label={mobileOpen ? "Close menu" : "Open menu"}
-          aria-expanded={mobileOpen}
+        <motion.div
+          variants={reveal}
+          transition={{ duration: 0.9, ease }}
+          className="md:hidden"
         >
-          {mobileOpen ? (
-            <X className="h-5 w-5" />
-          ) : (
-            <Menu className="h-5 w-5" />
-          )}
-        </Button>
-      </nav>
+          <Button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="flex h-10 w-10 items-center justify-center rounded-full transition-colors hover:bg-muted"
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileOpen}
+          >
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span
+                key={mobileOpen ? "close" : "menu"}
+                initial={{ opacity: 0, rotate: -45, scale: 0.7 }}
+                animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                exit={{ opacity: 0, rotate: 45, scale: 0.7 }}
+                transition={{ duration: 0.18 }}
+                className="flex"
+              >
+                {mobileOpen ? (
+                  <X className="h-5 w-5" />
+                ) : (
+                  <Menu className="h-5 w-5" />
+                )}
+              </motion.span>
+            </AnimatePresence>
+          </Button>
+        </motion.div>
+      </motion.nav>
 
       {/* Mobile navigation */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -10, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.98 }}
-            transition={{ duration: 0.2 }}
+            initial={{
+              opacity: 0,
+              y: -12,
+              scale: 0.97,
+              filter: "blur(8px)",
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              filter: "blur(0px)",
+            }}
+            exit={{
+              opacity: 0,
+              y: -8,
+              scale: 0.98,
+              filter: "blur(5px)",
+            }}
+            transition={{ duration: 0.35, ease }}
             className="mx-auto mt-2 max-w-7xl overflow-hidden rounded-2xl border border-border bg-background p-4 shadow-lg md:hidden"
           >
             <div className="flex flex-col">
               {navLinks.map((link, index) => (
                 <motion.div
                   key={link.label}
-                  initial={{ opacity: 0, x: -8 }}
+                  initial={{ opacity: 0, x: -12 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.04 }}
+                  exit={{ opacity: 0, x: -8 }}
+                  transition={{
+                    duration: 0.35,
+                    delay: index * 0.055,
+                    ease,
+                  }}
                 >
                   <Link
                     href={link.href}
@@ -96,7 +195,13 @@ const Navbar = () => {
               ))}
             </div>
 
-            <div className="mt-3 flex gap-3 border-t border-border pt-4">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8 }}
+              transition={{ duration: 0.35, delay: 0.2, ease }}
+              className="mt-3 flex gap-3 border-t border-border pt-4"
+            >
               <Link
                 href="/login"
                 onClick={() => setMobileOpen(false)}
@@ -105,13 +210,13 @@ const Navbar = () => {
                 Log in
               </Link>
 
-              <Button asChild size={`sm`}>
+              <Button asChild size="sm">
                 <Link href="/auth" onClick={() => setMobileOpen(false)}>
                   Get started
                   <ArrowUpRight className="h-4 w-4" />
                 </Link>
               </Button>
-            </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
